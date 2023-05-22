@@ -1,6 +1,9 @@
 import { useQuery } from "@tanstack/react-query";
 import logo from "./assets/logo.svg";
+import loader from "./assets/loader.svg";
 import { styled } from "styled-components";
+import ExchangeRateInput from "./components/ExchangeRateInput";
+import useExchangeRates from "./hooks/useExchangeRates";
 
 const StyledAppWrapper = styled.div`
   text-align: center;
@@ -37,29 +40,16 @@ const StyledLogo = styled.img`
 `;
 
 const App = () => {
-  const { isLoading, error, data } = useQuery({
-    queryKey: ["rates"],
-    queryFn: () =>
-      fetch(
-        "https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt",
-        { mode: "no-cors" }
-      ).then(() => "Hello World 😇"),
-  });
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-  if (error) {
-    return <div>An error has occurred:</div>;
-  }
+  const { isLoading, error, data } = useExchangeRates();
 
   return (
     <StyledAppWrapper>
       <StyledHeader>
         <StyledLogo src={logo} alt="logo" />
         <h1>Currency Exchange Rate Input</h1>
-        {error ? <p>Error</p> : null}
-        <p>{data}</p>
+        {isLoading && <img src={loader} alt="loading" />}
+        {error && <p>An error has occurred. Try to refresh the page.</p>}
+        {!isLoading && !error && <ExchangeRateInput rates={data} />}
       </StyledHeader>
     </StyledAppWrapper>
   );
