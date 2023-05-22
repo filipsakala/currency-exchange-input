@@ -1,0 +1,5 @@
+{
+  "name": "server",
+  "version": "0.1.0",
+  "description": "Simple Server for fetching Currency Exchange Rates"
+}

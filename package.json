@@ -1,0 +1,13 @@
+{
+  "name": "currency-exchange-input-bundle",
+  "version": "0.1.0",
+  "description": "Currency Exchange Rate input bundle",
+  "main": "index.js",
+  "repository": "git@github.com:filipsakala/currency-exchange-input.git",
+  "author": "Filip Sakala <fil.sakala@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ]
+}
