@@ -4,6 +4,7 @@
   "description": "Simple Client for displaying Currency Exchange Rates input",
   "private": true,
   "dependencies": {
+    "@tanstack/react-query": "^4.29.7",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
