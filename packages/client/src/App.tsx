@@ -55,12 +55,7 @@ const App = () => {
         {!isLoading && !error && !hasData && (
           <p>Failed to load initial configuration.</p>
         )}
-        {!isLoading && !error && hasData && (
-          <>
-            <ExchangeRateInput rates={data} />
-            <ExchangeRates rates={data} />
-          </>
-        )}
+        {!isLoading && !error && hasData && <ExchangeRates rates={data} />}
       </StyledHeader>
     </StyledAppWrapper>
   );

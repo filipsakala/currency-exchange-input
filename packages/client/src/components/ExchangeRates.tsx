@@ -1,6 +1,9 @@
 import { styled } from "styled-components";
 import ExchangeRate from "../types/ExchangeRate";
 import { LOCALE } from "../consts";
+import ExchangeRateInput from "./ExchangeRateInput";
+import { FormEvent, useCallback, useState } from "react";
+import { THEME } from "./theme";
 
 type Props = {
   rates: ExchangeRate[];
@@ -14,7 +17,7 @@ const StyledRates = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
 `;
 
-const StyledRate = styled.div`
+const StyledRate = styled.div<{ isSelected: boolean }>`
   border: 1px solid gray;
   font-size: 14px;
   padding: 10px;
@@ -22,6 +25,15 @@ const StyledRate = styled.div`
   align-items: center;
   justify-content: space-between;
   border-radius: 4px;
+
+  background: ${({ isSelected }) =>
+    isSelected ? THEME.select.hover.backgroundColor : "none"};
+
+  cursor: pointer;
+
+  &:hover {
+    background: ${THEME.select.hover.backgroundColor};
+  }
 `;
 
 const StyledAmount = styled.div`
@@ -29,17 +41,31 @@ const StyledAmount = styled.div`
 `;
 
 const ExchangeRates = ({ rates }: Props) => {
+  const [selectedCurrency, setSelectedCurrency] = useState<string>("");
+
   return (
-    <StyledRates>
-      {rates.map(({ code, currency, amount, country, rate }) => (
-        <StyledRate key={code} title={currency}>
-          <div>
-            {amount} {code} ({country})
-          </div>
-          <StyledAmount>{rate.toLocaleString(LOCALE)} CZK</StyledAmount>
-        </StyledRate>
-      ))}
-    </StyledRates>
+    <>
+      <ExchangeRateInput
+        rates={rates}
+        selectedCurrency={selectedCurrency}
+        setSelectedCurrency={setSelectedCurrency}
+      />
+      <StyledRates>
+        {rates.map(({ code, currency, amount, country, rate }) => (
+          <StyledRate
+            key={code}
+            title={currency}
+            onClick={() => setSelectedCurrency(code)}
+            isSelected={selectedCurrency === code}
+          >
+            <div>
+              {amount} {code} ({country})
+            </div>
+            <StyledAmount>{rate.toLocaleString(LOCALE)} CZK</StyledAmount>
+          </StyledRate>
+        ))}
+      </StyledRates>
+    </>
   );
 };
 

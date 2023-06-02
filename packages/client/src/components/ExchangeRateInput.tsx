@@ -1,4 +1,4 @@
-import { FormEvent, useCallback, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
 import ExchangeRate from "../types/ExchangeRate";
 import Button from "./Button.styled";
 import Input from "./Input.styled";
@@ -8,6 +8,8 @@ import { LOCALE } from "../consts";
 
 type Props = {
   rates: ExchangeRate[];
+  selectedCurrency: string;
+  setSelectedCurrency: (currency: string) => void;
 };
 
 const InputWrapper = styled.div`
@@ -22,18 +24,21 @@ const StyledErrorMessage = styled.div`
   color: lightcoral;
   font-size: medium;
   text-align: left;
-  padding: 5px 0;
+  padding: 5px 10px;
 `;
 
 const StyledResult = styled.div`
-  padding: 5px 0;
+  padding: 5px 10px;
   font-size: medium;
 `;
 
-const ExchangeRateInput = ({ rates }: Props) => {
+const ExchangeRateInput = ({
+  rates,
+  selectedCurrency,
+  setSelectedCurrency,
+}: Props) => {
   const [isInvalidInput, setIsInvalidInput] = useState<boolean>(false);
   const [amount, setAmount] = useState<number | null>(null);
-  const [currency, setCurrency] = useState<string>("");
   const [exchangeAmount, setExchangeAmount] = useState<number | null>(null);
 
   const ratesByCurrency = useMemo(() => {
@@ -48,14 +53,8 @@ const ExchangeRateInput = ({ rates }: Props) => {
 
   const currencies = Object.keys(ratesByCurrency);
 
-  const resetState = useCallback(() => {
-    setIsInvalidInput(false);
-    setExchangeAmount(null);
-  }, []);
-
   const handleAmountChange = useCallback(
     (event: FormEvent<HTMLInputElement>) => {
-      resetState();
       const inputTarget = event.target as HTMLInputElement;
       setAmount(Number(inputTarget.value) || 0);
     },
@@ -64,20 +63,22 @@ const ExchangeRateInput = ({ rates }: Props) => {
 
   const handleCurrencyChange = useCallback(
     (event: FormEvent<HTMLSelectElement>) => {
-      resetState();
       const inputTarget = event.target as HTMLSelectElement;
-      setCurrency(inputTarget.value || "");
+      setSelectedCurrency(inputTarget.value || "");
     },
     []
   );
 
-  const handleSubmit = useCallback(() => {
-    if (!amount || !currency) {
+  const handleSubmitExchangeRate = useCallback(() => {
+    setIsInvalidInput(false);
+    setExchangeAmount(null);
+
+    if (!amount || !selectedCurrency) {
       setIsInvalidInput(true);
       return;
     }
 
-    const rate = ratesByCurrency[currency];
+    const rate = ratesByCurrency[selectedCurrency];
 
     if (!rate) {
       setIsInvalidInput(true);
@@ -86,7 +87,15 @@ const ExchangeRateInput = ({ rates }: Props) => {
 
     const resultAmount = (amount * rate.amount) / rate.rate;
     setExchangeAmount(resultAmount);
-  }, [amount, currency, ratesByCurrency]);
+  }, [amount, selectedCurrency, ratesByCurrency]);
+
+  useEffect(() => {
+    if (amount && selectedCurrency) {
+      handleSubmitExchangeRate();
+    } else {
+      setExchangeAmount(null);
+    }
+  }, [amount, selectedCurrency]);
 
   return (
     <div>
@@ -101,7 +110,11 @@ const ExchangeRateInput = ({ rates }: Props) => {
           autoFocus
         />
         CZK to
-        <Select name="rates" value={currency} onChange={handleCurrencyChange}>
+        <Select
+          name="rates"
+          value={selectedCurrency}
+          onChange={handleCurrencyChange}
+        >
           <option value="">Currency</option>
           {currencies.map((currency) => (
             <option key={currency} value={currency}>
@@ -110,7 +123,7 @@ const ExchangeRateInput = ({ rates }: Props) => {
             </option>
           ))}
         </Select>
-        <Button onClick={handleSubmit}>Exchange!</Button>
+        <Button onClick={handleSubmitExchangeRate}>Exchange!</Button>
       </InputWrapper>
       {isInvalidInput && (
         <StyledErrorMessage>
@@ -121,7 +134,7 @@ const ExchangeRateInput = ({ rates }: Props) => {
         <StyledResult>
           Great! Now you can exchange {amount} CZK for{" "}
           {exchangeAmount.toLocaleString(LOCALE)}{" "}
-          {ratesByCurrency[currency].code}
+          {ratesByCurrency?.[selectedCurrency]?.code}
         </StyledResult>
       )}
     </div>
