@@ -17,5 +17,8 @@
     "dev": "concurrently \"yarn workspace client dev\" \"yarn workspace server dev\"",
     "start": "concurrently \"yarn workspace client start\" \"yarn workspace server start\"",
     "build": "yarn workspace client build && yarn workspace server build"
+  },
+  "engines": {
+    "node": "18.16.0"
   }
 }
