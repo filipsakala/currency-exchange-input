@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
 import ExchangeRate from "../types/ExchangeRate";
-import parseExchangeRates from "../utils/parseExchangeRates";
 
 type ExchangeRateErrorType = any;
 type ReturnType = {
@@ -10,19 +9,23 @@ type ReturnType = {
   data: ExchangeRate[];
 };
 
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 const useExchangeRates = (): ReturnType => {
-  const { isLoading, error, data } = useQuery<string, ExchangeRateErrorType>({
+  const { isLoading, error, data } = useQuery<
+    ExchangeRate[],
+    ExchangeRateErrorType
+  >({
     queryKey: ["rates"],
     queryFn: () =>
-      fetch(
-        "https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt",
-        { mode: "no-cors" }
-      ).then(() => "Hello World 😇"),
+      fetch(`${BACKEND_URL}/exchange-rates`)
+        .then((response) => response.json())
+        .then((data) => data),
     onError: (err: Object) => err,
   });
 
   return useMemo(
-    () => ({ isLoading, error, data: parseExchangeRates(data) }),
+    () => ({ isLoading, error, data: data || [] }),
     [isLoading, error, data]
   );
 };
