@@ -19,6 +19,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "nodemon ./src/app.ts"
+    "start": "nodemon ./index.ts",
+    "start:prod": "node ./build/index.js"
   }
 }
