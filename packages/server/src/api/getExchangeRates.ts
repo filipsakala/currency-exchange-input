@@ -37,7 +37,8 @@ const parseExchangeRates = (textRates?: string): ExchangeRate[] => {
       });
 
       return rates;
-    }, []);
+    }, [])
+    .sort((a: ExchangeRate, b: ExchangeRate) => a.code.localeCompare(b.code));
 };
 
 const getExchangeRates = (): Promise<ExchangeRate[]> => {

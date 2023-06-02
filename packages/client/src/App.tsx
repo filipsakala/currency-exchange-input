@@ -1,9 +1,9 @@
-import { useQuery } from "@tanstack/react-query";
 import logo from "./assets/logo.svg";
 import loader from "./assets/loader.svg";
 import { styled } from "styled-components";
 import ExchangeRateInput from "./components/ExchangeRateInput";
 import useExchangeRates from "./hooks/useExchangeRates";
+import ExchangeRates from "./components/ExchangeRates";
 
 const StyledAppWrapper = styled.div`
   text-align: center;
@@ -11,7 +11,7 @@ const StyledAppWrapper = styled.div`
 
 const StyledHeader = styled.header`
   background-color: #282c34;
-  height: 100vh;
+  min-height: 100vh;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -21,8 +21,8 @@ const StyledHeader = styled.header`
   color: white;
 `;
 
-const StyledLogo = styled.img`
-  height: 40vmin;
+const StyledLogo = styled.img<{ dataLoaded: boolean }>`
+  height: ${({ dataLoaded }) => (dataLoaded ? 10 : 40)}vmin;
   pointer-events: none;
 
   @media (prefers-reduced-motion: no-preference) {
@@ -37,6 +37,8 @@ const StyledLogo = styled.img`
       transform: rotate(360deg);
     }
   }
+
+  transition: 1000ms ease-in-out;
 `;
 
 const App = () => {
@@ -46,14 +48,19 @@ const App = () => {
   return (
     <StyledAppWrapper>
       <StyledHeader>
-        <StyledLogo src={logo} alt="logo" />
+        <StyledLogo src={logo} alt="logo" dataLoaded={hasData} />
         <h1>Currency Exchange Rate Input</h1>
         {isLoading && <img src={loader} alt="loading" />}
         {error && <p>An error has occurred. Try to refresh the page.</p>}
         {!isLoading && !error && !hasData && (
           <p>Failed to load initial configuration.</p>
         )}
-        {!isLoading && !error && hasData && <ExchangeRateInput rates={data} />}
+        {!isLoading && !error && hasData && (
+          <>
+            <ExchangeRateInput rates={data} />
+            <ExchangeRates rates={data} />
+          </>
+        )}
       </StyledHeader>
     </StyledAppWrapper>
   );

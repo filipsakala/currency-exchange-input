@@ -4,6 +4,7 @@ import Button from "./Button.styled";
 import Input from "./Input.styled";
 import Select from "./Select.styled";
 import { styled } from "styled-components";
+import { LOCALE } from "../consts";
 
 type Props = {
   rates: ExchangeRate[];
@@ -11,6 +12,9 @@ type Props = {
 
 const InputWrapper = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
   gap: 10px;
 `;
 
@@ -35,7 +39,7 @@ const ExchangeRateInput = ({ rates }: Props) => {
   const ratesByCurrency = useMemo(() => {
     return rates.reduce(
       (ratesByCurrency: Record<string, ExchangeRate>, rate: ExchangeRate) => {
-        ratesByCurrency[rate.currency] = rate;
+        ratesByCurrency[rate.code] = rate;
         return ratesByCurrency;
       },
       {}
@@ -44,8 +48,14 @@ const ExchangeRateInput = ({ rates }: Props) => {
 
   const currencies = Object.keys(ratesByCurrency);
 
+  const resetState = useCallback(() => {
+    setIsInvalidInput(false);
+    setExchangeAmount(null);
+  }, []);
+
   const handleAmountChange = useCallback(
     (event: FormEvent<HTMLInputElement>) => {
+      resetState();
       const inputTarget = event.target as HTMLInputElement;
       setAmount(Number(inputTarget.value) || 0);
     },
@@ -54,6 +64,7 @@ const ExchangeRateInput = ({ rates }: Props) => {
 
   const handleCurrencyChange = useCallback(
     (event: FormEvent<HTMLSelectElement>) => {
+      resetState();
       const inputTarget = event.target as HTMLSelectElement;
       setCurrency(inputTarget.value || "");
     },
@@ -61,9 +72,6 @@ const ExchangeRateInput = ({ rates }: Props) => {
   );
 
   const handleSubmit = useCallback(() => {
-    setIsInvalidInput(false);
-    setExchangeAmount(null);
-
     if (!amount || !currency) {
       setIsInvalidInput(true);
       return;
@@ -76,7 +84,7 @@ const ExchangeRateInput = ({ rates }: Props) => {
       return;
     }
 
-    const resultAmount = rate.amount * amount;
+    const resultAmount = (amount * rate.amount) / rate.rate;
     setExchangeAmount(resultAmount);
   }, [amount, currency, ratesByCurrency]);
 
@@ -92,11 +100,13 @@ const ExchangeRateInput = ({ rates }: Props) => {
           onChange={handleAmountChange}
           autoFocus
         />
+        CZK to
         <Select name="rates" value={currency} onChange={handleCurrencyChange}>
           <option value="">Currency</option>
           {currencies.map((currency) => (
             <option key={currency} value={currency}>
-              {currency}
+              {ratesByCurrency[currency].code} (
+              {ratesByCurrency[currency].currency})
             </option>
           ))}
         </Select>
@@ -109,8 +119,9 @@ const ExchangeRateInput = ({ rates }: Props) => {
       )}
       {exchangeAmount && (
         <StyledResult>
-          Great! Now you can exchange {amount} {currency} for {exchangeAmount}{" "}
-          CZK
+          Great! Now you can exchange {amount} CZK for{" "}
+          {exchangeAmount.toLocaleString(LOCALE)}{" "}
+          {ratesByCurrency[currency].code}
         </StyledResult>
       )}
     </div>
