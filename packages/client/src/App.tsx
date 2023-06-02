@@ -41,6 +41,7 @@ const StyledLogo = styled.img`
 
 const App = () => {
   const { isLoading, error, data } = useExchangeRates();
+  const hasData = data && Boolean(data.length);
 
   return (
     <StyledAppWrapper>
@@ -49,7 +50,10 @@ const App = () => {
         <h1>Currency Exchange Rate Input</h1>
         {isLoading && <img src={loader} alt="loading" />}
         {error && <p>An error has occurred. Try to refresh the page.</p>}
-        {!isLoading && !error && <ExchangeRateInput rates={data} />}
+        {!isLoading && !error && !hasData && (
+          <p>Failed to load initial configuration.</p>
+        )}
+        {!isLoading && !error && hasData && <ExchangeRateInput rates={data} />}
       </StyledHeader>
     </StyledAppWrapper>
   );
