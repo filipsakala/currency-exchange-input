@@ -11,6 +11,7 @@
     "packages/*"
   ],
   "scripts": {
-    "start": "yarn workspace client start"
+    "start": "yarn workspace client start",
+    "build": "yarn workspace client build && yarn workspace server build"
   }
 }
