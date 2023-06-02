@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Simple Server for fetching Currency Exchange Rates",
   "private": true,
+  "type": "module",
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.1",
@@ -19,7 +20,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon ./index.ts",
+    "dev": "nodemon --esm ./index.ts",
     "start": "node ./build/index.js"
   }
 }

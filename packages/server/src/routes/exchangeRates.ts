@@ -1,6 +1,6 @@
 import express from "express";
-import getExchangeRates from "../api/getExchangeRates";
-import { ParseError } from "../types/errors";
+import getExchangeRates from "../api/getExchangeRates.js";
+import { ParseError } from "../types/errors.js";
 
 const router = express.Router();
 

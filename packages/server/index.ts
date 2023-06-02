@@ -2,7 +2,7 @@ import express from "express";
 import helmet from "helmet";
 import cors from "cors";
 
-import exchangeRates from "./src/routes/exchangeRates";
+import exchangeRates from "./src/routes/exchangeRates.js";
 
 const app = express();
 const port = 3200;

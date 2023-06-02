@@ -1,7 +1,7 @@
-// import fetch from "node-fetch";
+import fetch from "node-fetch";
 
-import ExchangeRate from "../types/ExchangeRate";
-import { ParseError } from "../types/errors";
+import ExchangeRate from "../types/ExchangeRate.js";
+import { ParseError } from "../types/errors.js";
 
 const EXCHANGE_RATES_URL =
   "https://www.cnb.cz/en/financial-markets/foreign-exchange-market/central-bank-exchange-rate-fixing/central-bank-exchange-rate-fixing/daily.txt";
@@ -43,8 +43,8 @@ const parseExchangeRates = (textRates?: string): ExchangeRate[] => {
 
 const getExchangeRates = (): Promise<ExchangeRate[]> => {
   return fetch(EXCHANGE_RATES_URL)
-    .then((response) => response.text())
-    .then((textRates) => parseExchangeRates(textRates));
+    .then((response: any) => response.text())
+    .then((textRates: string) => parseExchangeRates(textRates));
 };
 
 export default getExchangeRates;
