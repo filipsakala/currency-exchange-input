@@ -10,7 +10,10 @@ const port = 3200;
 app.use(helmet());
 app.use(
   cors({
-    origin: "http://localhost:3000",
+    origin: [
+      "http://localhost:3000",
+      "https://stellar-frangollo-11bce5.netlify.app",
+    ],
   })
 );
 app.use("/exchange-rates", exchangeRates);
