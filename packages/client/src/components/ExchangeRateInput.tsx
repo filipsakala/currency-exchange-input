@@ -66,7 +66,7 @@ const ExchangeRateInput = ({
       const inputTarget = event.target as HTMLSelectElement;
       setSelectedCurrency(inputTarget.value || "");
     },
-    []
+    [setSelectedCurrency]
   );
 
   const handleSubmitExchangeRate = useCallback(() => {
@@ -95,6 +95,7 @@ const ExchangeRateInput = ({
     } else {
       setExchangeAmount(null);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amount, selectedCurrency]);
 
   return (

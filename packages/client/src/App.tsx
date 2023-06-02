@@ -1,7 +1,6 @@
 import logo from "./assets/logo.svg";
 import loader from "./assets/loader.svg";
 import { styled } from "styled-components";
-import ExchangeRateInput from "./components/ExchangeRateInput";
 import useExchangeRates from "./hooks/useExchangeRates";
 import ExchangeRates from "./components/ExchangeRates";
 

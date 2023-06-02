@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 import ExchangeRate from "../types/ExchangeRate";
 import { LOCALE } from "../consts";
 import ExchangeRateInput from "./ExchangeRateInput";
-import { FormEvent, useCallback, useState } from "react";
+import { useState } from "react";
 import { THEME } from "./theme";
 
 type Props = {
