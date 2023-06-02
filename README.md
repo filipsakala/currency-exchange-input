@@ -8,12 +8,13 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 In the project directory, you can run:
 
-### `yarn start`
+### `yarn dev`
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 Runs backend on port [http://localhost:3200](http://localhost:3200).
 
-### `yarn build`
+### `yarn build`, `yarn start`
 
 Builds the app for production to the `build` folder.\
+Starts production app.
