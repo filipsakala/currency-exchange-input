@@ -1,16 +1,20 @@
-import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useMemo, useState } from "react";
 import ExchangeRate from "../types/ExchangeRate";
-import Button from "./Button.styled";
 import Input from "./Input.styled";
 import Select from "./Select.styled";
 import { styled } from "styled-components";
-import { LOCALE } from "../consts";
+import ExchangeResult from "./ExchangeResult";
 
 type Props = {
   rates: ExchangeRate[];
   selectedCurrency: string;
   setSelectedCurrency: (currency: string) => void;
 };
+const StyledExchangeRateInput = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+`;
 
 const InputWrapper = styled.div`
   display: flex;
@@ -20,26 +24,12 @@ const InputWrapper = styled.div`
   gap: 10px;
 `;
 
-const StyledErrorMessage = styled.div`
-  color: lightcoral;
-  font-size: medium;
-  text-align: left;
-  padding: 5px 10px;
-`;
-
-const StyledResult = styled.div`
-  padding: 5px 10px;
-  font-size: medium;
-`;
-
 const ExchangeRateInput = ({
   rates,
   selectedCurrency,
   setSelectedCurrency,
 }: Props) => {
-  const [isInvalidInput, setIsInvalidInput] = useState<boolean>(false);
   const [amount, setAmount] = useState<number | null>(null);
-  const [exchangeAmount, setExchangeAmount] = useState<number | null>(null);
 
   const ratesByCurrency = useMemo(() => {
     return rates.reduce(
@@ -52,6 +42,7 @@ const ExchangeRateInput = ({
   }, [rates]);
 
   const currencies = Object.keys(ratesByCurrency);
+  const selectedRate = ratesByCurrency[selectedCurrency];
 
   const handleAmountChange = useCallback(
     (event: FormEvent<HTMLInputElement>) => {
@@ -69,37 +60,8 @@ const ExchangeRateInput = ({
     [setSelectedCurrency]
   );
 
-  const handleSubmitExchangeRate = useCallback(() => {
-    setIsInvalidInput(false);
-    setExchangeAmount(null);
-
-    if (!amount || !selectedCurrency) {
-      setIsInvalidInput(true);
-      return;
-    }
-
-    const rate = ratesByCurrency[selectedCurrency];
-
-    if (!rate) {
-      setIsInvalidInput(true);
-      return;
-    }
-
-    const resultAmount = (amount * rate.amount) / rate.rate;
-    setExchangeAmount(resultAmount);
-  }, [amount, selectedCurrency, ratesByCurrency]);
-
-  useEffect(() => {
-    if (amount && selectedCurrency) {
-      handleSubmitExchangeRate();
-    } else {
-      setExchangeAmount(null);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [amount, selectedCurrency]);
-
   return (
-    <div>
+    <StyledExchangeRateInput>
       <InputWrapper>
         <Input
           type="number"
@@ -124,21 +86,9 @@ const ExchangeRateInput = ({
             </option>
           ))}
         </Select>
-        <Button onClick={handleSubmitExchangeRate}>Exchange!</Button>
       </InputWrapper>
-      {isInvalidInput && (
-        <StyledErrorMessage>
-          Type an amount you want to exchange and select a currency.
-        </StyledErrorMessage>
-      )}
-      {exchangeAmount && (
-        <StyledResult>
-          Great! Now you can exchange {amount} CZK for{" "}
-          {exchangeAmount.toLocaleString(LOCALE)}{" "}
-          {ratesByCurrency?.[selectedCurrency]?.code}
-        </StyledResult>
-      )}
-    </div>
+      <ExchangeResult amount={amount} rate={selectedRate} />
+    </StyledExchangeRateInput>
   );
 };
 
