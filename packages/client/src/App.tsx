@@ -5,23 +5,21 @@ import useExchangeRates from "./hooks/useExchangeRates";
 import ExchangeRates from "./components/ExchangeRates";
 
 const StyledAppWrapper = styled.div`
+  display: grid;
   text-align: center;
-`;
 
-const StyledHeader = styled.header`
   background-color: #282c34;
   min-height: 100vh;
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
   color: white;
+`;
+
+const StyledHeader = styled.div`
+  padding: 20px;
 `;
 
 const StyledLogo = styled.img<{ dataLoaded: boolean }>`
   height: ${({ dataLoaded }) => (dataLoaded ? 10 : 40)}vmin;
+  max-width: 100%;
   pointer-events: none;
 
   @media (prefers-reduced-motion: no-preference) {
@@ -54,8 +52,8 @@ const App = () => {
         {!isLoading && !error && !hasData && (
           <p>Failed to load initial configuration.</p>
         )}
-        {!isLoading && !error && hasData && <ExchangeRates rates={data} />}
       </StyledHeader>
+      {!isLoading && !error && hasData && <ExchangeRates rates={data} />}
     </StyledAppWrapper>
   );
 };
