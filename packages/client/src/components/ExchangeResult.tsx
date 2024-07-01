@@ -1,3 +1,4 @@
+import styled from "styled-components";
 import { LOCALE } from "../consts";
 import ExchangeRate from "../types/ExchangeRate";
 
@@ -5,6 +6,11 @@ type Props = {
   amount: number | null;
   rate?: ExchangeRate;
 };
+
+const StyledAmount = styled.span`
+  font-size: x-large;
+  color: #00ff1d;
+`;
 
 const ExchangeResult = ({ amount, rate }: Props) => {
   if (!amount || !rate) {
@@ -16,8 +22,13 @@ const ExchangeResult = ({ amount, rate }: Props) => {
 
   return (
     <div>
-      Great! Now you can exchange {amount} CZK for{" "}
-      {exchangeAmount.toLocaleString(LOCALE)} {exchangeCurrency}
+      <div>Great! Now you can exchange</div>
+      <div style={{ paddingTop: 10 }}>
+        <StyledAmount>{amount} CZK</StyledAmount> for{" "}
+        <StyledAmount>
+          {exchangeAmount.toLocaleString(LOCALE)} {exchangeCurrency}
+        </StyledAmount>
+      </div>
     </div>
   );
 };
